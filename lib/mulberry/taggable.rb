@@ -7,16 +7,19 @@ module Mulberry
       has_many :tags, source: :tag, through: :taggings, class_name: "Mulberry::Tag"
     end  
     
-    def tagged_with!(*args)
+    ##
+    # Example:
+    #   @user.tagged_with("awesome", "cool")                     
+    #   @user.tagged_with("awesome", "cool", :group => 'hello') 
+    def tag_with!(*args)
       options = args.last.is_a?(Hash) ? args.pop : {}
       tags = args.map do|tag_name|
         Tag.find_or_create_by!(name: tag_name, group: (options[:group] || :global))
       end
-      self.tags = tags      
+      self.tags |= tags      
     end
 
-    module ClassMethods  
-      
+    module ClassMethods        
       ##
       # Example:
       #   User.tagged_with("awesome", "cool")                     # Users that are tagged with awesome and cool
@@ -30,6 +33,16 @@ module Mulberry
         if tag_ids.first
           if options.delete(:any)
             joins(:taggings).where(taggings: {tag_id: tag_ids}).uniq
+          elsif options.delete(:exclude)
+            sql =<<-SQL
+              NOT EXISTS(
+                SELECT * FROM #{tagging_table_name} WHERE 
+                  #{taggable_class.table_name}.id = #{tagging_table_name}.taggable_id
+                  AND #{tagging_table_name}.taggable_type = '#{taggable_class}'
+                  AND #{tagging_table_name}.tag_id IN (?)
+              )              
+            SQL
+            where(sql, tag_ids)
           elsif options.delete(:match_all)
             # Not exists a tag given it not tagged AND Not exists a tag which not given it tagged 
             sql =<<-SQL
@@ -62,7 +75,9 @@ module Mulberry
       
       private
          def class_of_active_record_descendant
-           self
+           ActiveRecord::Base.direct_descendants.each do|clazz|
+             return clazz if clazz <= self
+           end
          end
          
          def tagging_table_name
