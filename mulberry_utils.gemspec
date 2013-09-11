@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = MulberryUtils::VERSION
   spec.authors       = ["James Zhan"]
   spec.email         = ["zhiqiangzhan@gmail.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
-  spec.homepage      = ""
+  spec.description   = %q{Taggable, Commentable, Likable, Votable}
+  spec.summary       = %q{Taggable, Commentable, Likable, Votable}
+  spec.homepage      = "http://www.github.com/jameszhan/mulberry_utils"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)

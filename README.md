@@ -27,3 +27,9 @@ TODO: Write usage instructions here
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
+AND EXISTS (
+  SELECT * FROM #{tagging_table_name} WHERE 
+    #{taggable_class.table_name}.id = #{tagging_table_name}.taggable_id
+    AND #{tagging_table_name}.taggable_type = '#{taggable_class}' 
+    AND #{tagging_table_name}.tag_id IN (?))

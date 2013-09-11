@@ -1,5 +1,6 @@
 require "mulberry_utils/version"
+require "mulberry"
 
 module MulberryUtils
-  # Your code goes here...
+
 end
