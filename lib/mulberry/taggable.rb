@@ -32,7 +32,7 @@ module Mulberry
             joins(:taggings).where(taggings: {tag_id: tag_ids}).uniq
           elsif options.delete(:match_all)
             # Not exists a tag given it not tagged AND Not exists a tag which not given it tagged 
-            sql =<<-EXISTS_SQL
+            sql =<<-SQL
               NOT EXISTS (
                 SELECT * FROM #{tag_table_name} WHERE #{tag_table_name}.id IN (?) 
                 AND NOT EXISTS (
@@ -47,36 +47,13 @@ module Mulberry
                     #{taggable_class.table_name}.id = #{tagging_table_name}.taggable_id
                     AND #{tagging_table_name}.taggable_type = '#{taggable_class}'
                     AND #{tag_table_name}.id = #{tagging_table_name}.tag_id))
-            EXISTS_SQL
-            sql2 =<<-IN_SQL
-              #{taggable_class.table_name}.id NOT IN (
-                SELECT taggable_id FROM #{tagging_table_name} WHERE
-                #{taggable_class.table_name}.id = #{tagging_table_name}.taggable_id
-                AND #{tagging_table_name}.taggable_type = '#{taggable_class}'
-                AND #{tagging_table_name}.tag_id NOT IN (?))
-              AND
-              #{taggable_class.table_name}.id IN (
-                SELECT taggable_id FROM #{tagging_table_name} WHERE
-                #{taggable_class.table_name}.id = #{tagging_table_name}.taggable_id
-                AND #{tagging_table_name}.taggable_type = '#{taggable_class}'
-                AND #{tagging_table_name}.tag_id IN (?))
-            IN_SQL
+            SQL
             where(sql, tag_ids, tag_ids)            
           else
-#            joins("INNER JOIN #{tagging_table_name} ON #{taggable_class.table_name}.id = #{tagging_table_name}.taggable_id AND #{tagging_table_name}.taggable_type = '#{taggable_class}'")                                                                        
-#              .where(taggings: {tag_id: tag_ids})
-#              .group("#{taggable_class.table_name}.id")
-#              .having("COUNT(DISTINCT #{tagging_table_name}.tag_id) = ?", tag_ids.count)
-            sql =<<-SQL
-              NOT EXISTS (
-                SELECT * FROM #{tag_table_name} WHERE #{tag_table_name}.id IN (?) 
-                AND NOT EXISTS (
-                  SELECT * FROM #{tagging_table_name} WHERE 
-                    #{taggable_class.table_name}.id = #{tagging_table_name}.taggable_id
-                    AND #{tagging_table_name}.taggable_type = '#{taggable_class}'
-                    AND #{tag_table_name}.id = #{tagging_table_name}.tag_id ))
-            SQL
-            where(sql, tag_ids)
+            joins("INNER JOIN #{tagging_table_name} ON #{taggable_class.table_name}.id = #{tagging_table_name}.taggable_id AND #{tagging_table_name}.taggable_type = '#{taggable_class}'")                                                                        
+              .where(taggings: {tag_id: tag_ids})
+              .group("#{taggable_class.table_name}.id")
+              .having("COUNT(DISTINCT #{tagging_table_name}.tag_id) = ?", tag_ids.count)
           end
         else
           taggable_class.none
