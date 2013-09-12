@@ -9,6 +9,7 @@ class CreateTaggings < ActiveRecord::Migration
     end
     add_index :taggings, :tag_id
     add_index :taggings, [:taggable_id, :taggable_type]
+    add_index :taggings, [:taggable_id, :taggable_type, :tag_id], unique: true
     add_index :taggings, [:tagger_id, :tagger_type]
   end
 end

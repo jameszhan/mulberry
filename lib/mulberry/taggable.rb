@@ -1,6 +1,7 @@
 module Mulberry
   module Taggable
     extend ::ActiveSupport::Concern
+    include Utils
 
     included do
       has_many :taggings, dependent: :destroy, as: :taggable, class_name: "Mulberry::Tagging"
@@ -28,7 +29,7 @@ module Mulberry
       #   User.tagged_with("awesome", "cool", :match_all => true) # Users that are tagged with just awesome and cool
       def tagged_with(*args)
         options = args.last.is_a?(Hash) ? args.pop : {}
-        taggable_class = class_of_active_record_descendant
+        taggable_class = class_of_active_record_descendant(self)
         tag_ids = Tag.where(name: args)
         if tag_ids.first
           if options.delete(:any)
@@ -73,13 +74,7 @@ module Mulberry
         end
       end   
       
-      private
-         def class_of_active_record_descendant
-           ActiveRecord::Base.direct_descendants.each do|clazz|
-             return clazz if clazz <= self
-           end
-         end
-         
+      private         
          def tagging_table_name
            Mulberry::Tagging.table_name
          end

@@ -1,27 +1,23 @@
 module Mulberry
   module Commentable
     extend ::ActiveSupport::Concern
+    include Utils
 
     included do
-      class_eval do
-        has_many :comments, :as => :commentable, :dependent => :destroy
-      end
+      has_many :comments, as: :commentable, dependent: :destroy, class_name: "Mulberry::Comment"
+      
+      scope :commented_by, ->(user){ joins(:comments)
+        .where(comments: {user_id: user, commentable_type: self.base_class})
+      }
+      scope :find_comments_by, ->(user){ Comment.where(user_id: user, commentable_type: self.base_class).order('created_at DESC') }
     end
 
-    def comment_by(user, comment)
-      comments.create(:user => user, :comment => comment)
+    def comment_by!(user, content, title = nil)
+      comments.create(user: user, title: title, content: content)
     end  
 
-    def comment_by_user?(user)
-      user = current_user unless user
-      user && comments.first(:conditions => {:user_id => user})
-    end
-
-    module ClassMethods
-      def find_comments_by_user(user)
-        commentable = self.base_class.name.to_s
-        Comment.where(:user_id => user.id, :commentable_type => commentable).order('created_at DESC')
-      end    
+    def commented_by?(user)
+      comments.where(user_id: user).first != nil
     end
 
   end
