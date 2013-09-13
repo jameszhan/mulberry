@@ -17,11 +17,20 @@ module Mulberry
     end
     
     def follow?(user)
-      followees.where(follower_id: user).any?
+      followees.where(followees_followers: {followee_id: user}).any?
     end  
 
     def followed_by?(user)
-      followers.where(followee_id: user).any?
+      followers.where(followees_followers: {follower_id: user}).any?
+    end
+    
+    def make_friend_with(user)
+      follow(user)
+      user.follow(self)
+    end
+    
+    def friend_with?(user)
+      follow?(user) && followed_by?(user)
     end
     
   end
