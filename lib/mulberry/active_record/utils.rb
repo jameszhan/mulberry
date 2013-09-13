@@ -11,7 +11,7 @@ module Mulberry
       
       def user_class
         User.base_class
-      end 
+      end
       
       def user_class_name
         user_class.name

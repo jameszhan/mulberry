@@ -8,6 +8,10 @@ require 'rubygems'
 require 'bundler/setup'
  
 require 'mulberry'
+require 'factory_girl'
+require 'user'
+
+require 'db_setup.rb'
 
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
@@ -19,4 +23,7 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   config.order = 'random'
+    
+  FactoryGirl.find_definitions
 end
+

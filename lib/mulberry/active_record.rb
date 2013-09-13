@@ -1,3 +1,4 @@
+require 'active_record'
 module Mulberry
   autoload :Utils,          "mulberry/active_record/utils.rb"
   autoload :Tag,            "mulberry/active_record/tag.rb"
@@ -14,5 +15,6 @@ module Mulberry
   autoload :Votable,        "mulberry/active_record/votable.rb"
   autoload :Catalog,        "mulberry/active_record/catalog.rb"
   autoload :Catalogable,    "mulberry/active_record/catalogable.rb"
+  autoload :Relationship,   "mulberry/active_record/relationship.rb"
 end
 
