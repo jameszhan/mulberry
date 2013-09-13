@@ -1,6 +1,6 @@
 # Mulberry
 
-TODO: Write a gem description
+Basic ActiveRecord Extension as Likable, Taggable, Commentable, Ratable, Votable 
 
 ## Installation
 
