@@ -1,4 +1,4 @@
-bundle gem mulberry_utils
+bundle gem mulberry
 
 ###Setup RSpec
 

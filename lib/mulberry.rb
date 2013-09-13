@@ -1,3 +1,5 @@
+require "mulberry/version"
+
 module Mulberry
   autoload :Utils,      "mulberry/utils.rb"
   autoload :Tag,        "mulberry/tag.rb"
