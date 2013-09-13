@@ -24,6 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "factory_girl"
   spec.add_development_dependency "faker"
+  spec.add_development_dependency "database_cleaner",  '< 1.1.0'
   spec.add_development_dependency "sqlite3"
   spec.add_development_dependency "activerecord"
 end

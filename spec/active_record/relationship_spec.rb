@@ -1,7 +1,7 @@
 require 'spec_helper'
 describe Mulberry::Relationship do
   
-  before do
+  before(:all) do
     User.class_eval do
       include Mulberry::Relationship
     end

@@ -8,10 +8,12 @@ require 'rubygems'
 require 'bundler/setup'
  
 require 'mulberry'
+require 'database_cleaner'
 require 'factory_girl'
 require 'user'
 
 require 'db_setup.rb'
+
 
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
@@ -23,6 +25,18 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   config.order = 'random'
+  
+  config.before(:suite) do
+    DatabaseCleaner.strategy = :truncation
+  end
+
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
+
+  config.after(:each) do
+    DatabaseCleaner.clean
+  end
     
   FactoryGirl.find_definitions
 end

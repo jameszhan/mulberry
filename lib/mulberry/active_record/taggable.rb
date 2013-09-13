@@ -10,9 +10,9 @@ module Mulberry
     
     ##
     # Example:
-    #   @user.tagged_with("awesome", "cool")                     
-    #   @user.tagged_with("awesome", "cool", :group => 'hello') 
-    def tag!(*args)
+    #   @user.tag("awesome", "cool")                     
+    #   @user.tag("awesome", "cool", :group => 'hello') 
+    def tag(*args)
       options = args.last.is_a?(Hash) ? args.pop : {}
       tags = args.map do|tag_name|
         Tag.find_or_create_by!(name: tag_name, group: (options[:group] || :global))
@@ -34,14 +34,14 @@ module Mulberry
       def tagged_with(*args)
         options = args.last.is_a?(Hash) ? args.pop : {}
         taggable_class = class_of_active_record_descendant(self)
-        tag_ids = Tag.where(name: args)
-        if tag_ids.first
+        tag_ids = Tag.where(name: args, group: options[:group] || :global)
+        if tag_ids.any?
           if options.delete(:any)
             joins(:taggings).where(taggings: {tag_id: tag_ids}).uniq
           elsif options.delete(:exclude)
             sql =<<-SQL
-              NOT EXISTS(
-                SELECT * FROM #{tagging_table_name} WHERE 
+              #{taggable_class.table_name}.id NOT IN (
+                SELECT DISTINCT #{tagging_table_name}.taggable_id FROM #{tagging_table_name} WHERE 
                   #{taggable_class.table_name}.id = #{tagging_table_name}.taggable_id
                   AND #{tagging_table_name}.taggable_type = '#{taggable_class}'
                   AND #{tagging_table_name}.tag_id IN (?)
