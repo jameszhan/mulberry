@@ -10,8 +10,12 @@ module Mulberry
       end 
       
       def user_class
-        User
+        User.base_class
       end 
+      
+      def user_class_name
+        user_class.name
+      end
     end
   end
 end

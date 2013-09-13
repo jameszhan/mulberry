@@ -1,4 +1,4 @@
-class CreateFollowable < ActiveRecord::Migration
+class CreateFriendships < ActiveRecord::Migration
   def change
     create_table :followees_followers, id: false do |t|
       t.references :followee, null: false

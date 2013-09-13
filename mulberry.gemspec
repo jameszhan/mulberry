@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Mulberry::VERSION
   spec.authors       = ["James Zhan"]
   spec.email         = ["zhiqiangzhan@gmail.com"]
-  spec.description   = %q{Taggable, Commentable, Likable, Ratable, Votable}
-  spec.summary       = %q{Taggable, Commentable, Likable, Ratable, Votable}
+  spec.description   = %q{Taggable, Commentable, Likable, Ratable, Votable, Followable, Relationships}
+  spec.summary       = %q{Taggable, Commentable, Likable, Ratable, Votable, Followable, Relationships}
   spec.homepage      = "http://www.github.com/jameszhan/mulberry"
   spec.license       = "MIT"
 
@@ -22,4 +22,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake"  
   
   spec.add_development_dependency "rspec"
+  spec.add_development_dependency "factory_girl"
+  spec.add_development_dependency "faker"
 end
