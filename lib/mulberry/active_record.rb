@@ -10,5 +10,7 @@ module Mulberry
   autoload :Rate,       "mulberry/active_record/rate.rb"
   autoload :Ratable,    "mulberry/active_record/ratable.rb"
   autoload :Rating,     "mulberry/active_record/rating.rb"
+  autoload :Vote,       "mulberry/active_record/vote.rb"
+  autoload :Votable,    "mulberry/active_record/votable.rb"
 end
 

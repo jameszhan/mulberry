@@ -9,6 +9,28 @@ module Mulberry
         .where(likes: {user_id: user, likable_type: class_of_active_record_descendant(self)})
         .order("created_at DESC") 
       } 
+      user_class.class_eval do
+        def like(likable)
+          likable.vote(1, self)
+        end
+        
+        def dislike(likable)
+          likable.vote(-1, self)
+        end
+
+        def unlike(likable)
+          likable.likes.where(user_id: self).first.try(:delete)
+        end
+        
+        def like?(likable)
+          likable.likes.find_or_initialize_by(user_id: self).value > 0
+        end
+        
+        def dislike?(likable)
+          likable.likes.find_or_initialize_by(user_id: self).value < 0
+        end
+                
+      end
     end
 
     def likes_value
@@ -18,25 +40,9 @@ module Mulberry
     def users_who_liked
       likes.map(&:user) 
     end
-
-    def liked_by?(user)
-      likes.where(user_id: user).any?
-    end
-    
-    def like!(user)
-      vote(user, 1)
-    end
-    
-    def dislike!(user)
-      vote(user, -1)
-    end
-
-    def unlike!(user)
-      likes.where(user_id: user).first.try(:delete)
-    end
     
     # upsert
-    def vote(user, value)
+    def vote(value, user)
       like = likes.find_or_initialize_by(:user => user)
       like.value += value
       like.save!
