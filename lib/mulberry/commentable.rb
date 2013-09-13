@@ -12,12 +12,12 @@ module Mulberry
       scope :find_comments_by, ->(user){ Comment.where(user_id: user, commentable_type: self.base_class).order('created_at DESC') }
     end
 
-    def comment_by!(user, content, title = nil)
+    def comment!(user, content, title = nil)
       comments.create(user: user, title: title, content: content)
     end  
 
     def commented_by?(user)
-      comments.where(user_id: user).first != nil
+      comments.where(user_id: user).any?
     end
 
   end

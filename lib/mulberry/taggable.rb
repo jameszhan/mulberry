@@ -12,12 +12,16 @@ module Mulberry
     # Example:
     #   @user.tagged_with("awesome", "cool")                     
     #   @user.tagged_with("awesome", "cool", :group => 'hello') 
-    def tag_with!(*args)
+    def tag!(*args)
       options = args.last.is_a?(Hash) ? args.pop : {}
       tags = args.map do|tag_name|
         Tag.find_or_create_by!(name: tag_name, group: (options[:group] || :global))
       end
-      self.tags |= tags      
+      if options.delete(:force)
+        self.tags = tags
+      else
+        self.tags |= tags
+      end      
     end
 
     module ClassMethods        

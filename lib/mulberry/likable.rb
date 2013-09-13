@@ -4,39 +4,42 @@ module Mulberry
     include Utils
 
     included do
-      has_many :likes, :as => :likable, :dependent => :destroy
-      scope :liked_by_user, ->(user){ joins(:likes)
+      has_many :likes, as: :likable, dependent: :destroy, class_name: "Mulberry::Like"
+      scope :liked_by, ->(user){ joins(:likes)
         .where(likes: {user_id: user, likable_type: class_of_active_record_descendant(self)})
         .order("created_at DESC") 
       } 
     end
 
-    def likes_sum
+    def likes_value
       likes.sum(:value)
     end
 
-    def liked_users
-      likes.include(:users).map(&:user) 
+    def users_who_liked
+      likes.map(&:user) 
     end
 
     def liked_by?(user)
-      likes.where(user_id: user).first
+      likes.where(user_id: user).any?
     end
     
-    def like_by(user)
-      vote_by(user, 1)
+    def like!(user)
+      vote(user, 1)
+    end
+    
+    def dislike!(user)
+      vote(user, -1)
     end
 
-    def unlike_by(user)
+    def unlike!(user)
       likes.where(user_id: user).first.try(:delete)
     end
-
-    def dislike_by(user)
-      vote_by(user, -1)
-    end
     
-    def vote_by(user, value)
-      likes.create(:user => user, :value => value)
+    # upsert
+    def vote(user, value)
+      like = likes.find_or_initialize_by(:user => user)
+      like.value += value
+      like.save!
     end
         
   end
