@@ -5,5 +5,7 @@ module Mulberry
     
     validates_presence_of :name
     validates_uniqueness_of :name
+    
+    belongs_to :catalogable, polymorphic: true
   end
 end
