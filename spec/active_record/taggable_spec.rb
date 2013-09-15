@@ -18,7 +18,7 @@ describe Mulberry::Taggable do
   end
   
   context "check tagged_with without group" do
-    before(:all) { Mulberry::Tag.find_or_create_by(name: 'A') }
+    before { Mulberry::Tag.find_or_create_by(name: 'A') }
     let!(:user1) { FactoryGirl.create(:user) }
     let!(:user2) { FactoryGirl.create(:user) }
     let!(:user3) { FactoryGirl.create(:user) }
@@ -48,7 +48,7 @@ describe Mulberry::Taggable do
   
   context "check tagged_with with group" do 
     let(:group) { "james" }
-    before(:all) { Mulberry::Tag.find_or_create_by(name: 'A', group: group) }   
+    before { Mulberry::Tag.find_or_create_by(name: 'A', group: group) }   
     let!(:user1) { FactoryGirl.create(:user) }
     let!(:user2) { FactoryGirl.create(:user) }
     let!(:user3) { FactoryGirl.create(:user) }
