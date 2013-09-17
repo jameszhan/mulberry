@@ -38,7 +38,7 @@ module Mulberry
     end
 
     def users_who_liked
-      likes.where("value != ?", 0).map(&:user) 
+      likes.where("value != ?", 0).map(&:user)
     end
     
     # upsert

@@ -6,7 +6,7 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 require 'rubygems'
 require 'bundler/setup'
- 
+
 require 'mulberry'
 require 'database_cleaner'
 require 'factory_girl'
@@ -37,6 +37,8 @@ RSpec.configure do |config|
   config.after(:each) do
     DatabaseCleaner.clean
   end
+  
+  config.include FactoryGirl::Syntax::Methods
     
   FactoryGirl.find_definitions
 end

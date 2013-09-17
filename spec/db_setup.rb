@@ -18,6 +18,16 @@ ActiveRecord::Schema.define(version: 20130913054953) do
 
   add_index "comments", ["commentable_type", "commentable_id"], name: "index_comments_on_commentable_type_and_commentable_id"
   add_index "comments", ["user_id"], name: "index_comments_on_user_id"
+ 
+  create_table "catalogs", force: true do |t|
+    t.string   "name",          null: false
+    t.text     "description"
+    t.string   "kind",                        default: "#ffffff"
+    t.integer  "parent_id",                   default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+  add_index "catalogs", ["name"], name: "index_catalogs_on_name", unique: true
 
   create_table "likes", force: true do |t|
     t.integer  "user_id",                  null: false
@@ -45,7 +55,8 @@ ActiveRecord::Schema.define(version: 20130913054953) do
     t.integer  "rater_id"
     t.string   "rater_type"
     t.integer  "ratable_id"
-    t.string   "ratable_type"
+    t.string   "ratable_type"    
+    t.text     "review_text"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

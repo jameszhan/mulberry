@@ -1,66 +1,61 @@
 require 'spec_helper'
-describe Mulberry::Taggable do
+describe Mulberry::Likable do
   
   before(:all) do
-    User.class_eval do
+    Mulberry::Catalog.class_eval do
       include Mulberry::Likable
     end 
   end
   
   context "check like functionalities" do
-    let(:user1) { FactoryGirl.create(:user) }
-    let(:user2) { FactoryGirl.create(:user) }
+    let(:user) { create(:user) }
+    let(:ruby) { create(:ruby) }
     
-    it "user1 like user2" do
-      user2.likes_value.should == 0
-      user1.like(user2)
-      user1.like?(user2).should be_true
-      user1.dislike?(user2).should be_false
-      user2.likes_value.should == 1
-      user1.users_who_liked.should be_empty
-      user2.users_who_liked.should == [user1]
+    it "user like ruby" do
+      ruby.likes_value.should == 0
+      user.like(ruby)
+      user.like?(ruby).should be_true
+      user.dislike?(ruby).should be_false
+      ruby.likes_value.should == 1
+      ruby.users_who_liked.should == [user]
     end
     
-    it "user1 unlike user2" do      
-      user1.unlike(user2)
-      user2.likes_value.should == 0
-      user1.like?(user2).should be_false
+    it "user unlike ruby" do      
+      user.unlike(ruby)
+      ruby.likes_value.should == 0
+      user.like?(ruby).should be_false
       
-      user1.like(user2)
-      user1.unlike(user2)      
-      user1.like?(user2).should be_false
-      user2.likes_value.should == 0
-      user1.users_who_liked.should be_empty
-      user2.users_who_liked.should be_empty
+      user.like(ruby)
+      user.unlike(ruby)      
+      user.like?(ruby).should be_false
+      ruby.likes_value.should == 0
+      ruby.users_who_liked.should be_empty
     end
     
-    it "user1 dislike user2" do      
-      user1.dislike(user2)      
-      user1.dislike?(user2).should be_true
-      user1.like?(user2).should be_false
-      user2.likes_value.should == -1
-      user1.users_who_liked.should be_empty
-      user2.users_who_liked.should == [user1]
+    it "user dislike ruby" do      
+      user.dislike(ruby)      
+      user.dislike?(ruby).should be_true
+      user.like?(ruby).should be_false
+      ruby.likes_value.should == -1
+      ruby.users_who_liked.should == [user]
     end
     
     it "like and then dislike" do      
-      user1.like(user2)  
-      user1.dislike(user2)      
-      user1.dislike?(user2).should be_false
-      user1.like?(user2).should be_false
-      user2.likes_value.should == 0
-      user1.users_who_liked.should be_empty
-      user2.users_who_liked.should be_empty
+      user.like(ruby)  
+      user.dislike(ruby)      
+      user.dislike?(ruby).should be_false
+      user.like?(ruby).should be_false
+      ruby.likes_value.should == 0
+      ruby.users_who_liked.should be_empty
     end
     
     it "dislike and then like" do  
-      user1.dislike(user2)         
-      user1.like(user2)      
-      user1.dislike?(user2).should be_false
-      user1.like?(user2).should be_false
-      user2.likes_value.should == 0
-      user1.users_who_liked.should be_empty
-      user2.users_who_liked.should be_empty
+      user.dislike(ruby)         
+      user.like(ruby)      
+      user.dislike?(ruby).should be_false
+      user.like?(ruby).should be_false
+      ruby.likes_value.should == 0
+      ruby.users_who_liked.should be_empty
     end
   end
   

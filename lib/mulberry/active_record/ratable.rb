@@ -1,6 +1,7 @@
 module Mulberry
   module Ratable
     extend ActiveSupport::Concern
+    include Utils
   
     included do
       has_many :ratings, dependent: :destroy, as: :ratable, class_name: "Mulberry::Rating"
@@ -25,7 +26,7 @@ module Mulberry
       rate = Rate.find_or_create_by!(score: val)
       rating = ratings.find_or_initialize_by(rater_id: rater[:id], rater_type: rater[:type])
       rating.rate = rate
-      #rating.review_text = review_text
+      rating.review_text = review_text
       rating.save
     end
     
