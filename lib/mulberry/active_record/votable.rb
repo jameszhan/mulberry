@@ -15,7 +15,7 @@ module Mulberry
         end
         
         def voted?(votable)
-          votable.votes.where(user_id: self).any?
+          votable.votes.where("user_id = ? AND value != ?", self, 0).any?
         end
         
         def up?(votable)
@@ -27,11 +27,11 @@ module Mulberry
         end
 
         def up(votable)
-          votable.do_vote(1, self)
+          votable.do_vote(1, self, override: true)
         end
 
         def down(votable)
-          votable.do_vote(-1, self)
+          votable.do_vote(-1, self, override: true)
         end        
       end
     end 
@@ -40,14 +40,17 @@ module Mulberry
       votes.sum(:value)
     end
     
-    # upsert
-    def do_vote(value, user)
+    def do_vote(value, user, *args)
+      options = args.last.is_a?(Hash) ? args.pop : {}
       vote = votes.find_or_initialize_by(user: user)
-      if value == 0
-        vote.delete
-      else
+      if options.delete(:override)
         vote.value = value
         vote.save
+      elsif options.delete(:accumulate)
+        vote.value += value
+        vote.value == 0 ? vote.delete : vote.save
+      else
+        
       end
     end
     
