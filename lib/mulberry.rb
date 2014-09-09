@@ -1,5 +1,5 @@
-require "mulberry/version"
-require "mulberry/active_record"
+require 'mulberry/version'
+require 'mulberry/active_record'
 
 module Mulberry
 
